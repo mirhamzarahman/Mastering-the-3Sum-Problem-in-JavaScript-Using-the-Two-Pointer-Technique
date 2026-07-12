@@ -1,29 +1,46 @@
-'use strict';
+var threeSum = function(nums) {
+    nums.sort((a, b) => a - b);
 
-const fs = require('fs');
+    const result = [];
 
-const input = fs.readFileSync(0, 'utf8').trim().split('\n');
+    for (let i = 0; i < nums.length - 2; i++) {
 
-const n = Number(input[0]); // Number of games (not actually needed)
-const s = input[1];          // String containing A and D
+        // Skip duplicate starting numbers
+        if (i > 0 && nums[i] === nums[i - 1]) {
+            continue;
+        }
 
-let anton = 0;
-let danik = 0;
+        let left = i + 1;
+        let right = nums.length - 1;
 
-// Count wins
-for (const ch of s) {
-    if (ch === 'A') {
-        anton++;
-    } else {
-        danik++;
+        while (left < right) {
+
+            const sum = nums[i] + nums[left] + nums[right];
+
+            if (sum === 0) {
+
+                result.push([nums[i], nums[left], nums[right]]);
+
+                // Skip duplicate left values
+                while (left < right && nums[left] === nums[left + 1]) {
+                    left++;
+                }
+
+                // Skip duplicate right values
+                while (left < right && nums[right] === nums[right - 1]) {
+                    right--;
+                }
+
+                left++;
+                right--;
+
+            } else if (sum < 0) {
+                left++;
+            } else {
+                right--;
+            }
+        }
     }
-}
 
-// Compare counts and print the result
-if (anton > danik) {
-    console.log('Anton');
-} else if (danik > anton) {
-    console.log('Danik');
-} else {
-    console.log('Friendship');
-}
+    return result;
+};
